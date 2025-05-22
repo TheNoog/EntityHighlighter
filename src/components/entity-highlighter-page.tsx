@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -11,8 +12,9 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { HighlightedText } from '@/components/highlighted-text';
 import { Loader2, Wand2 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-import { resetCategoryColors } from '@/lib/color-utils';
+import { getPastelColorForCategory, resetCategoryColors } from '@/lib/color-utils';
 import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 
 export interface Entity {
   text: string;
@@ -26,6 +28,7 @@ export default function EntityHighlighterPage() {
   const [inputText, setInputText] = useState<string>('');
   const [processedText, setProcessedText] = useState<string>('');
   const [entities, setEntities] = useState<Entity[]>([]);
+  const [uniqueCategories, setUniqueCategories] = useState<string[]>([]);
   const [confidenceThreshold, setConfidenceThreshold] = useState<number>(DEFAULT_CONFIDENCE_THRESHOLD);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { toast } = useToast();
@@ -34,6 +37,15 @@ export default function EntityHighlighterPage() {
     // Reset colors when the component mounts or page reloads, for consistent demo experience
     resetCategoryColors();
   }, []);
+
+  useEffect(() => {
+    if (entities.length > 0) {
+      const categories = new Set(entities.map(entity => entity.category));
+      setUniqueCategories(Array.from(categories));
+    } else {
+      setUniqueCategories([]);
+    }
+  }, [entities]);
 
   const handleAnalyzeText = async () => {
     if (!inputText.trim()) {
@@ -47,7 +59,9 @@ export default function EntityHighlighterPage() {
 
     setIsLoading(true);
     setEntities([]); // Clear previous entities
+    setUniqueCategories([]); // Clear previous categories
     setProcessedText(inputText); // Set text to be highlighted
+    resetCategoryColors(); // Reset colors for a new analysis
 
     try {
       // 1. Extract entities
@@ -171,6 +185,23 @@ export default function EntityHighlighterPage() {
                 : "Results will appear here after analysis." 
             }
           </CardDescription>
+          {!isLoading && uniqueCategories.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {uniqueCategories.map(category => (
+                <Badge
+                  key={category}
+                  style={{ 
+                    backgroundColor: getPastelColorForCategory(category),
+                    color: 'var(--card-foreground)', // Ensure text is readable
+                    border: '1px solid var(--border)',
+                  }}
+                  className="font-medium"
+                >
+                  {category}
+                </Badge>
+              ))}
+            </div>
+          )}
         </CardHeader>
         <CardContent>
           {isLoading ? (
