@@ -2,6 +2,9 @@
 
 Entity Highlighter is a Next.js application designed to perform Named Entity Recognition (NER) on a given block of text. It identifies and categorizes entities (such as people, organizations, locations, etc.) and visually highlights them with distinct pastel colors corresponding to their categories. The app also allows users to filter entities based on a confidence score.
 
+![EntityHighlighter1](EntityHighlighter1.png) 
+![EntityHighlighter2](EntityHighlighter2.png)
+
 ## Core Features
 
 -   **Text Input**: A user-friendly interface with a text area to paste or type in the text for analysis.
