@@ -12,6 +12,7 @@ import { HighlightedText } from '@/components/highlighted-text';
 import { Loader2, Wand2 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { resetCategoryColors } from '@/lib/color-utils';
+import { Skeleton } from "@/components/ui/skeleton";
 
 export interface Entity {
   text: string;
